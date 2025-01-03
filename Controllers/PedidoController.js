@@ -1,6 +1,8 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { ClienteRepository } from "../Repositories/clienteRepository.js";
 import { PedidoRepository } from "../Repositories/pedidosRepository.js";
+import { MecanicoRepository } from "../Repositories/mecanicosRepository.js";
+import { Pedido } from "../Models/Pedido.js";
 
 
 export class PedidoController {
@@ -92,5 +94,21 @@ export class PedidoController {
             return res.status(500).json({ error: err.message });
         }
     }
+
+    static async buscarPorMecanico(req,res){
+        try{
+            const id_mecanico = req.params.mecanicoID
+
+            const mecanico = await MecanicoRepository.buscarMecanico(id_mecanico)
+
+            const pedidos = await PedidoRepository.filtrarPedido({id_mecanico})
+
+            return res.status(200).json({mecanico: mecanico.nombre, pedidos: pedidos})
+
+        }catch(err){
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
 
 }
